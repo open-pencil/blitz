@@ -16,4 +16,4 @@ Each is dropped here once upstream has it and the base includes it.
 
 Each also goes upstream, following Blitz's CONTRIBUTING.MD, and is dropped here once the base includes it.
 
-- Refuse a stylesheet `@import` whose URL does not resolve instead of panicking (`net.rs`), as in a document without a base URL, which OpenPencil's CLI and MCP server lay out; test `unresolvable_import`.
+- Refuse a stylesheet `@import` whose URL does not resolve instead of panicking (`net.rs`), as in a document without a base URL, which OpenPencil's CLI and MCP server lay out; test `unresolvable_import`. Upstream: DioxusLabs/blitz#1563.
