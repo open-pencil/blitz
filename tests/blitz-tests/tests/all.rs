@@ -81,6 +81,7 @@ mod touch_events;
 mod transform_2d_subset;
 mod transform_viewport_scale;
 mod ua_stylesheet_order;
+mod unresolvable_import;
 mod whitespace_modes;
 
 #[test]
