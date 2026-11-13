@@ -11,3 +11,9 @@ Branch `openpencil/blitz` of open-pencil/blitz: Blitz as [OpenPencil](https://gi
 Each is dropped here once upstream has it and the base includes it.
 
 - DioxusLabs/blitz#1279: inline layout requests atomic-inline baselines from Taffy, so an inline-block or inline-flex box inside a flex or grid container sits on its line; without it such a box sits 6 px low and every row below it shifts. Merged into the base by hand, since #1370 moved the inline-box loop into a closure.
+
+## Fixes of our own
+
+Each also goes upstream, following Blitz's CONTRIBUTING.MD, and is dropped here once the base includes it.
+
+- Refuse a stylesheet `@import` whose URL does not resolve instead of panicking (`net.rs`), as in a document without a base URL, which OpenPencil's CLI and MCP server lay out; test `unresolvable_import`. Upstream: DioxusLabs/blitz#1563.
