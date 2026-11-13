@@ -331,3 +331,9 @@ wgpu_context = { workspace = true }
 # [patch."https://github.com/linebender/parley"]
 # parley = { path = "../parley/parley" }
 # fontique = { path = "../parley/fontique" }
+
+# open-pencil/blitz: Taffy from open-pencil/taffy's `openpencil/taffy`, which carries the Taffy
+# pull requests this branch's Blitz ones need (OPENPENCIL.md). open-pencil/open-pencil patches
+# Taffy to the same branch in its own workspace, which is the patch that applies there.
+[patch."https://github.com/DioxusLabs/taffy"]
+taffy = { git = "https://github.com/open-pencil/taffy", rev = "e18f4ea42259fd1140342688c2629591daa2de5c" }
