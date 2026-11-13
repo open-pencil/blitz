@@ -44,3 +44,14 @@ WPT is the main correctness signal; results are deterministic.
 - One feature per PR; follow-ups go in a new PR. Don't implement unrelated features to fix WPT losses. Note the losses in the PR description instead.
 - Search existing PRs before starting on a missing feature (`gh pr list --state all --search <feature>`); there are often stacks already open.
 - Fixes in Taffy/Parley/anyrender/Stylo go upstream in those repos, not patched in Blitz.
+
+## open-pencil/blitz
+
+On branch `openpencil/blitz`, OpenPencil's fork; `OPENPENCIL.md` says what it carries and why.
+
+- The branch changes only through pull requests against it, reviewed by CodeRabbit and then a maintainer, never by a direct push; keep history linear by merging the base into a branch that falls behind, never force-pushing a branch under review.
+- A pull request follows OpenPencil's body template: Summary, What changed, AI assistance (the model's name, never as commit authorship or a trailer), Validation.
+- Carry upstream pull requests rather than writing fixes here; a fix of our own goes upstream first, following Blitz's CONTRIBUTING.MD, and is listed in `OPENPENCIL.md` while it waits.
+- Before a pull request, besides the checks above: `cargo test -p blitz-tests` and `cargo check -p blitz-dom --no-default-features --features svg,woff,floats`, the features OpenPencil builds with.
+- Upstream's Windows tests and WPT run on its WarpBuild runners, which this fork cannot use, so they stay queued here; the Linux, Android, and Apple test jobs, fmt, clippy, and docs are the checks a pull request passes, and an Apple job cancelled for want of a runner is re-run.
+- OpenPencil moves to a commit of this branch only after its pull request merges, moving the Taffy `[patch]` rev with it when it changes.
