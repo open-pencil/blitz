@@ -11,6 +11,7 @@ Branch `openpencil/blitz` of open-pencil/blitz: Blitz as [OpenPencil](https://gi
 Each is dropped here once upstream has it and the base includes it.
 
 - DioxusLabs/blitz#1279: inline layout requests atomic-inline baselines from Taffy, so an inline-block or inline-flex box inside a flex or grid container sits on its line; without it such a box sits 6 px low and every row below it shifts. Merged into the base by hand, since #1370 moved the inline-box loop into a closure.
+- DioxusLabs/blitz#1396: a table's `border` attribute draws the borders it asks for on the table and its cells. The default stylesheet's rules for it matched through Gecko's `:-moz-table-border-nonzero`, which Stylo's Servo parser drops, so neither drew and every box of a bordered table sat a pixel or two off. Cherry-picked unchanged.
 
 ## Fixes of our own
 
