@@ -19,3 +19,5 @@ Each is dropped here once upstream has it and the base includes it.
 Each also goes upstream, following Blitz's CONTRIBUTING.MD, and is dropped here once the base includes it.
 
 - Refuse a stylesheet `@import` whose URL does not resolve instead of panicking (`net.rs`), as in a document without a base URL, which OpenPencil's CLI and MCP server lay out; test `unresolvable_import`. Upstream: DioxusLabs/blitz#1563.
+- Fix broken intra-doc links in blitz-dom, blitz-vibey-script, and the `transparent` example, which `cargo doc` with `-D warnings` refuses. Upstream: DioxusLabs/blitz#1774.
+- CI's Documentation job documents every workspace crate (`cargo doc --workspace --no-deps`); a bare `cargo doc` documents only the root `blitz-examples` package, which has no library, so the job built no docs. Upstream: DioxusLabs/blitz#1775.
