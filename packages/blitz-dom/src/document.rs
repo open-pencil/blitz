@@ -3049,7 +3049,7 @@ mod hover_state_tests {
 #[cfg(test)]
 mod focus_visible_tests {
     use super::*;
-    use crate::{QualName, qual_name};
+    use crate::qual_name;
     use blitz_traits::shell::ColorScheme;
 
     #[test]
