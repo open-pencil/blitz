@@ -3047,6 +3047,61 @@ mod hover_state_tests {
 }
 
 #[cfg(test)]
+mod focus_visible_tests {
+    use super::*;
+    use crate::qual_name;
+    use blitz_traits::shell::ColorScheme;
+
+    #[test]
+    fn focus_visible_matches_focused_element() {
+        let mut doc = BaseDocument::new(DocumentConfig {
+            viewport: Some(Viewport::new(400, 300, 1.0, ColorScheme::Light)),
+            ..Default::default()
+        });
+        doc.add_user_agent_stylesheet(UserAgentStylesheet::parse(
+            "button:focus-visible { background-color: rgb(255, 0, 0); }",
+        ));
+        let root_id = doc.root_node().id;
+        let mut mutator = doc.mutate();
+        let html = mutator.create_element(qual_name!("html"), vec![]);
+        let body = mutator.create_element(qual_name!("body"), vec![]);
+        let button = mutator.create_element(qual_name!("button"), vec![]);
+        mutator.append_children(body, &[button]);
+        mutator.append_children(html, &[body]);
+        mutator.append_children(root_id, &[html]);
+        drop(mutator);
+        doc.resolve(0.0);
+        let background = |doc: &BaseDocument| {
+            format!(
+                "{:?}",
+                doc.nodes[button]
+                    .primary_styles()
+                    .unwrap()
+                    .get_background()
+                    .background_color
+            )
+        };
+        let unfocused = background(&doc);
+
+        doc.set_focus_to(button);
+        doc.resolve(0.0);
+        assert_ne!(
+            background(&doc),
+            unfocused,
+            "focus should match :focus-visible"
+        );
+
+        doc.clear_focus();
+        doc.resolve(0.0);
+        assert_eq!(
+            background(&doc),
+            unfocused,
+            "blur should stop matching :focus-visible"
+        );
+    }
+}
+
+#[cfg(test)]
 mod hover_invalidation_tests {
     use super::*;
     use crate::{Attribute, QualName, qual_name};

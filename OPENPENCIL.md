@@ -12,6 +12,7 @@ Each is dropped here once upstream has it and the base includes it.
 
 - DioxusLabs/blitz#1279: inline layout requests atomic-inline baselines from Taffy, so an inline-block or inline-flex box inside a flex or grid container sits on its line; without it such a box sits 6 px low and every row below it shifts. Merged into the base by hand, since #1370 moved the inline-box loop into a closure.
 - DioxusLabs/blitz#1396: a table's `border` attribute draws the borders it asks for on the table and its cells. The default stylesheet's rules for it matched through Gecko's `:-moz-table-border-nonzero`, which Stylo's Servo parser drops, so neither drew and every box of a bordered table sat a pixel or two off. Cherry-picked unchanged.
+- DioxusLabs/blitz#799, in part: `:focus-visible` matches the `FOCUSRING` element-state bit, which focus already sets, and the default stylesheet draws the focus outline on `:focus-visible` as browsers do. OpenPencil sets the bit on the elements a page shows focused. The rest of #799, which sets the bit only for keyboard focus, is left out: it is written against a Blitz from before the focus system it changes was reworked, and OpenPencil focuses no element through events. Test `focus_visible_matches_focused_element`.
 
 ## Fixes of our own
 
