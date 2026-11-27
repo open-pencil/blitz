@@ -1659,6 +1659,47 @@ mod test {
     use crate::{Attribute, BaseDocument, DocumentConfig, ElementData, NodeData, qual_name};
 
     #[test]
+    fn lazy_pseudo_style_applies_the_rules_that_target_it_over_what_it_inherits() {
+        use style::selector_parser::PseudoElement;
+
+        let mut document = BaseDocument::new(DocumentConfig::default());
+        let root_id = document.root_node().id;
+        let mut mutator = document.mutate();
+        let html = mutator.create_element(qual_name!("html"), vec![]);
+        let style = mutator.create_element(qual_name!("style"), vec![]);
+        let css = mutator.create_text_node("input::placeholder { color: rgb(255, 0, 0) }");
+        let input = mutator.create_element(qual_name!("input"), vec![]);
+        let div = mutator.create_element(qual_name!("div"), vec![]);
+        mutator.append_children(style, &[css]);
+        mutator.append_children(html, &[style, input, div]);
+        mutator.append_children(root_id, &[html]);
+        drop(mutator);
+        document.resolve(0.0);
+
+        let placeholder = document
+            .lazy_pseudo_style(input, &PseudoElement::Placeholder)
+            .expect("the input's placeholder has a rule");
+        let color = placeholder.get_inherited_text().color;
+        let (red, green, blue) = (color.components.0, color.components.1, color.components.2);
+        assert_eq!((red, green, blue), (1.0, 0.0, 0.0));
+        // No rule targets the div's placeholder, which only inherits from the div.
+        // `::before` is no lazy pseudo-element.
+        let inherited = document
+            .lazy_pseudo_style(div, &PseudoElement::Placeholder)
+            .expect("the div has a style");
+        let div_style = document.get_node(div).unwrap().primary_styles().unwrap();
+        assert_eq!(
+            inherited.get_inherited_text().color,
+            div_style.get_inherited_text().color
+        );
+        assert!(
+            document
+                .lazy_pseudo_style(input, &PseudoElement::Before)
+                .is_none()
+        );
+    }
+
+    #[test]
     fn unresolvable_relative_urls_are_skipped() {
         // Without a base url, relative urls cannot be resolved against the default
         // `data:` document url. Loading such resources should be skipped, not panic.
