@@ -611,8 +611,8 @@ impl BaseDocument {
         &self.guard
     }
 
-    /// The style of a pseudo-element that is cascaded lazily, such as `::placeholder` or
-    /// `::selection`, of the element `node_id`: the rules that target it applied over what it
+    /// The style of a pseudo-element that Stylo cascades lazily, such as `::placeholder` or
+    /// `::marker`, of the element `node_id`: the rules that target it applied over what it
     /// inherits from the element, or only what it inherits when no rule targets it. `None` when
     /// the element has no style yet, and for a pseudo-element that is cascaded eagerly, such as
     /// `::before`, whose style is the element's `before` or `after` node's.
