@@ -1659,7 +1659,7 @@ mod test {
     use crate::{Attribute, BaseDocument, DocumentConfig, ElementData, NodeData, qual_name};
 
     #[test]
-    fn lazy_pseudo_style_applies_the_rules_that_target_it() {
+    fn lazy_pseudo_style_applies_the_rules_that_target_it_over_what_it_inherits() {
         use style::selector_parser::PseudoElement;
 
         let mut document = BaseDocument::new(DocumentConfig::default());
@@ -1682,11 +1682,15 @@ mod test {
         let color = placeholder.get_inherited_text().color;
         let (red, green, blue) = (color.components.0, color.components.1, color.components.2);
         assert_eq!((red, green, blue), (1.0, 0.0, 0.0));
-        // No rule targets the div's placeholder, and `::before` is no lazy pseudo-element.
-        assert!(
-            document
-                .lazy_pseudo_style(div, &PseudoElement::Placeholder)
-                .is_none()
+        // No rule targets the div's placeholder, which only inherits from the div.
+        // `::before` is no lazy pseudo-element.
+        let inherited = document
+            .lazy_pseudo_style(div, &PseudoElement::Placeholder)
+            .expect("the div has a style");
+        let div_style = document.get_node(div).unwrap().primary_styles().unwrap();
+        assert_eq!(
+            inherited.get_inherited_text().color,
+            div_style.get_inherited_text().color
         );
         assert!(
             document
