@@ -51,8 +51,9 @@ use style::invalidation::element::restyle_hints::RestyleHint;
 use style::media_queries::MediaType;
 use style::properties::ComputedValues;
 use style::properties::style_structs::Font;
-use style::selector_parser::ServoElementSnapshot;
+use style::selector_parser::{PseudoElement, ServoElementSnapshot};
 use style::servo_arc::Arc as ServoArc;
+use style::stylist::RuleInclusion;
 use style::values::GenericAtomIdent;
 use style::values::computed::UserSelect;
 use style::values::computed::ui::CursorKind;
@@ -608,6 +609,34 @@ impl BaseDocument {
 
     pub fn guard(&self) -> &SharedRwLock {
         &self.guard
+    }
+
+    /// The style of a pseudo-element that is cascaded lazily, such as `::placeholder` or
+    /// `::selection`, of the element `node_id`: the rules that target it applied over the
+    /// element's own style, or `None` when the element has no style yet or no rule targets it.
+    /// Pseudo-elements that are cascaded eagerly, such as `::before`, are the element's
+    /// `before` and `after` nodes instead.
+    pub fn lazy_pseudo_style(
+        &self,
+        node_id: NodeId,
+        pseudo: &PseudoElement,
+    ) -> Option<ServoArc<ComputedValues>> {
+        if !pseudo.is_lazy() {
+            return None;
+        }
+        let node = self.get_node(node_id)?;
+        let originating = node.primary_styles()?;
+        let guard = self.guard.read();
+        let guards = StylesheetGuards::same(&guard);
+        self.stylist.lazily_compute_pseudo_element_style(
+            &guards,
+            BlitzNode(node),
+            pseudo,
+            RuleInclusion::All,
+            &originating,
+            true,
+            None,
+        )
     }
 
     pub fn tree(&self) -> &NodeTree {
